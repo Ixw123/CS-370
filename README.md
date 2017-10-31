@@ -1,2 +1,2 @@
 # CS-370
-Source code for everyone
+Design artifacts for all the pieces that people are programming
