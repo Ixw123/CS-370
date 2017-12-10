@@ -19,7 +19,6 @@
 class Deck {
 public:
     Deck();
-    static SDL_Renderer * Show_Card(Card);
     Deck(const Deck& orig);
     Card draw ();
     virtual ~Deck();

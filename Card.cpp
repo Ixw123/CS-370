@@ -45,8 +45,11 @@ void Card::print(Card card) {
         cout << card.start[i] << card.com[i] << card.end[i] << endl; 
     }
 }
+int Card::get_path(int index) {
+    return end[index]+1;
+}
 
-void Card::Show_Card(Card c, SDL_Rect Output_rect, SDL_Renderer* renderer,int rect_x,int rect_y,int rect_w,int rect_h){ 
+void Card::Show_Card(Card c, SDL_Rect Output_rect, SDL_Renderer* renderer,int rect_x,int rect_y,int rect_w,int rect_h, SDL_Texture* texture){ 
     
     SDL_Init(SDL_INIT_VIDEO && SDL_INIT_AUDIO);
     char *coms;
@@ -65,15 +68,12 @@ void Card::Show_Card(Card c, SDL_Rect Output_rect, SDL_Renderer* renderer,int re
     bool quit = false;
     char ch;
     SDL_Event event;
-    SDL_Window *window;                    // Declare a pointer
+    //SDL_Window *window;                    // Declare a pointer
     SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
-
-
     // Create an application window with the following settings:
     SDL_RenderPresent(renderer);
     SDL_Texture *card = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET, rect_w, rect_h);
     SDL_SetRenderTarget(renderer, card);
-    
     roundedBoxRGBA(renderer,0,0, rect_w, rect_h,10,255,255,255,255); 
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, 0,0,0,255);
@@ -144,10 +144,9 @@ void Card::Show_Card(Card c, SDL_Rect Output_rect, SDL_Renderer* renderer,int re
     //filledCircleRGBA(renderer, 100*(1/4) + 10,300,10,0,0,200,400);
     SDL_RenderPresent(renderer);
     
-    SDL_SetRenderTarget(renderer,NULL);
+    SDL_SetRenderTarget(renderer,texture);
     SDL_RenderCopy(renderer, card, NULL, &Output_rect);
     SDL_RenderPresent(renderer);
-    SDL_DestroyWindow(window);
 }
 
 char Card::get_com(int i) { 

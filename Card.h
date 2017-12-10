@@ -22,7 +22,8 @@ public:
     Card(int,int,int,int,char,char,char,char);
     char* get_coms(Card);
     char get_com(int);
-    void Show_Card(Card, SDL_Rect, SDL_Renderer*,int,int,int,int);
+    int get_path(int);
+    void Show_Card(Card, SDL_Rect, SDL_Renderer*,int,int,int,int,SDL_Texture* );
     int *get_paths(Card);
     void print(Card);
     virtual ~Card();

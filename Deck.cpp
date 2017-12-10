@@ -24,25 +24,11 @@
 
 #include "Deck.h"
 
+using namespace std;
+
 Deck::Deck() {
     //initialize SDL video and audio
-    SDL_Init(SDL_INIT_VIDEO && SDL_INIT_AUDIO);
-        SDL_Window *window;                    // Declare a pointer
-
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "Card and Deck Objects",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
-    );
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderClear(renderer);
-    //initialize mixer audio
+    //SDL_Init(SDL_INIT_VIDEO && SDL_INIT_AUDIO);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     //make an item to play a noise
     Mix_Chunk *shuffle = NULL;
@@ -51,7 +37,6 @@ Deck::Deck() {
     //play the chunk shuffle on the next open channel 3 times
     Mix_PlayChannel(-1, shuffle, 2);
     //keep the window open for 1000 miliseconds
-    SDL_Delay(1000);
     for (int i = 0; i < 46; i++)
 	{
 		c_deck[i] = false;
@@ -102,106 +87,49 @@ Deck::Deck() {
 	deck[43] = Card(3,2,4,1,'m','o','n','b');
 	deck[44] = Card(4,2,3,1,'m','o','n','b');
 	deck[45] = Card(3,4,2,1,'o','m','b','n');
-        
-        Mix_CloseAudio();
 }
 //a function that take nothing and returns a card
 Card Deck::draw() {
-    //initialize SDL video and audio
-        SDL_Init(SDL_INIT_VIDEO && SDL_INIT_AUDIO);
-        SDL_Window *window;                    // Declare a pointer of type window
-
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "Card and Deck Objects",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
-    );
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);//make the window red and opague
-    SDL_RenderClear(renderer);
-    //initialize the mixer audio channel
-                Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-                //make a chunk to be played when needed
-                Mix_Chunk *Draw = NULL;
-                //set the chuck to the draw.wav sound
-                Draw = Mix_LoadWAV("draw.wav");
-                //play the sound on the first open channel found
-                Mix_PlayChannel(-1, Draw, 0);
-                //wait to close the window for 200 miliseconds
-                SDL_Delay(200);
 	Card drawn;//card to be drawn
 	int ran;
-	bool picked = false;//bool for determining if the card is there or not
+        bool empty = true;
+	bool picked = false;//bool for determining if a card has been picked up or not
 	//get a true random int
         std::random_device rd; 
 	std::mt19937 mt(rd()); 
-
-	while (!picked) {
-                //get the uniform int distribution and pick a number from 0 to 45(46 cards in deck)
-		std::uniform_int_distribution<int> dist(0,45);
-                //set ran to that distribution based on mt
-		ran = dist(mt);
-                //check to see if the card is there
-		if(!c_deck[ran])
-		{
-                    //if it is than take it and make it so a card is no longer there in the deck
+        for (int i = 0; i < 46; i++) {
+        if(!c_deck[i]) 
+        {
+            empty = false;
+            i = 45;
+        }
+    }
+        if(!empty) 
+        {
+            while (!picked) {
+                    //get the uniform int distribution and pick a number from 0 to 45(46 cards in deck)
+                    std::uniform_int_distribution<int> dist(0,45);
+                    //set ran to that distribution based on mt
+                    ran = dist(mt);
+                    //check to see if the card is there
+                    if(!c_deck[ran])
+                    {
+                        //if it is than take it and make it so a card is no longer there in the deck
 			c_deck[ran] = true;
 			picked = !picked;
 			drawn = deck[ran];
-		}
+                    }
 
-	}
+            }
+        }
+        else
+            cout << "The deck has been comepletly drawn." << endl;
         //free and close all sdl things to ensure there are no leaks
-        Mix_CloseAudio();
-        SDL_Quit();
 	return drawn;
 }
 
 Deck::Deck(const Deck& orig) {
 }
 
-SDL_Renderer * Deck::Show_Card(Card c){
-    
-    bool quit = false;
-    SDL_Event event;
-    SDL_Window *window;                    // Declare a pointer
-    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
-
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "in show",                  // window title
-        SDL_WINDOWPOS_UNDEFINED,           // initial x position
-        SDL_WINDOWPOS_UNDEFINED,           // initial y position
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_OPENGL                  // flags - see below
-    );
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    SDL_Texture *card = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_TARGET, 480, 640);
-    SDL_SetRenderTarget(renderer, card);
-    filledCircleRGBA(renderer, 200,300,10,0,0,200,400);
-    SDL_RenderPresent(renderer);
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderPresent(renderer);
-    SDL_RenderDrawLine(renderer,200,300,300,400);
-    SDL_RenderPresent(renderer);
-    SDL_RenderDrawLine(renderer,300,400,0,700);
-    SDL_RenderPresent(renderer);
-    roundedBoxRGBA(renderer,0,0,640,480,255,255,255,255,255); 
-    SDL_RenderPresent(renderer);
-    SDL_SetRenderTarget(renderer,NULL);
-    SDL_RenderCopy(renderer,card,NULL,NULL);
-    SDL_RenderPresent(renderer);
-    SDL_DestroyWindow(window);
-    return renderer;
-}
-
 Deck::~Deck() {
 }
-
