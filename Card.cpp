@@ -26,6 +26,37 @@ Card::Card() {
 }
 
 Card::Card(int e1, int e2, int e3, int e4, char c1, char c2, char c3, char c4) {
+    bool err = false;
+    
+    if(e1 == e2 || e1 == e3 || e1 == e4)
+        err = true;
+    else if(e2 == e3 || e2 == e4)
+        err = true;
+    else if(e3 == e4)
+        err = true;
+    else if(e1 < 1 || e1 > 4)
+        err = true;
+    else if(e2 < 1 || e2 > 4)
+        err = true;
+    else if(e3 < 1 || e3 > 4)
+        err = true;
+    else if(e4 < 1 || e4 > 4)
+        err = true;
+    else if(c1 == c2 || c1 == c3 || c1 == c4)
+        err = true;
+    else if(c2 == c3 || c2 == c4)
+        err = true;
+    else if(c3 == c4)
+        err = true;
+    else if(c1 != 'm' && c1 != 'n' && c1 != 'o' && c1 != 'b')
+        err = true;
+    else if(c2 != 'm' && c2 != 'n' && c2 != 'o' && c2 != 'b')
+        err = true;
+    else if(c3 != 'm' && c3 != 'n' && c3 != 'o' && c3 != 'b')
+        err = true;
+    else if(c4 != 'm' && c4 != 'n' && c4 != 'o' && c4 != 'b')
+        err = true;
+    if(!err) {
     for(int i = 0; i < 4; i++) {
         start [i] = i + 1;
         c_com[i] = false;
@@ -38,6 +69,9 @@ Card::Card(int e1, int e2, int e3, int e4, char c1, char c2, char c3, char c4) {
     com[1] = c2;
     com[2] = c3;
     com[3] = c4;
+    }
+    else 
+        cerr << "Invalid arguments for a card, please try again." << endl;
 }
 void Card::print(Card card) {
     for(int i = 0; i < 4; i++)
